@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.RDLPathTxtBox = new System.Windows.Forms.TextBox();
+            this.FilesPathTxtBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.CriteriaTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -41,38 +41,41 @@
             this.OutputPathTxtBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(191, 11);
+            this.label1.Location = new System.Drawing.Point(165, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(257, 25);
+            this.label1.Size = new System.Drawing.Size(308, 25);
             this.label1.TabIndex = 0;
-            this.label1.Text = "RDL Data Source Locator";
+            this.label1.Text = "RDL/RSD Data Source Locator";
             // 
-            // RDLPathTxtBox
+            // FilesPathTxtBox
             // 
-            this.RDLPathTxtBox.Location = new System.Drawing.Point(229, 106);
-            this.RDLPathTxtBox.Name = "RDLPathTxtBox";
-            this.RDLPathTxtBox.Size = new System.Drawing.Size(362, 20);
-            this.RDLPathTxtBox.TabIndex = 1;
+            this.FilesPathTxtBox.Location = new System.Drawing.Point(229, 74);
+            this.FilesPathTxtBox.Multiline = true;
+            this.FilesPathTxtBox.Name = "FilesPathTxtBox";
+            this.FilesPathTxtBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.FilesPathTxtBox.Size = new System.Drawing.Size(362, 61);
+            this.FilesPathTxtBox.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(77, 107);
+            this.label2.Location = new System.Drawing.Point(60, 74);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(143, 17);
+            this.label2.Size = new System.Drawing.Size(161, 17);
             this.label2.TabIndex = 2;
-            this.label2.Text = "RDL Parent Directory";
+            this.label2.Text = "Files Parent Directory(s)";
             // 
             // CriteriaTextBox
             // 
-            this.CriteriaTextBox.Location = new System.Drawing.Point(229, 164);
+            this.CriteriaTextBox.Location = new System.Drawing.Point(229, 187);
             this.CriteriaTextBox.Multiline = true;
             this.CriteriaTextBox.Name = "CriteriaTextBox";
             this.CriteriaTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -84,7 +87,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(39, 167);
+            this.label3.Location = new System.Drawing.Point(40, 187);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(181, 17);
             this.label3.TabIndex = 4;
@@ -92,7 +95,7 @@
             // 
             // OutputTxtBox
             // 
-            this.OutputTxtBox.Location = new System.Drawing.Point(48, 314);
+            this.OutputTxtBox.Location = new System.Drawing.Point(48, 328);
             this.OutputTxtBox.Multiline = true;
             this.OutputTxtBox.Name = "OutputTxtBox";
             this.OutputTxtBox.ReadOnly = true;
@@ -104,7 +107,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(282, 484);
+            this.button1.Location = new System.Drawing.Point(282, 498);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 36);
             this.button1.TabIndex = 6;
@@ -116,7 +119,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(110, 133);
+            this.label4.Location = new System.Drawing.Point(111, 155);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 17);
             this.label4.TabIndex = 8;
@@ -124,7 +127,7 @@
             // 
             // OutputPathTxtBox
             // 
-            this.OutputPathTxtBox.Location = new System.Drawing.Point(229, 132);
+            this.OutputPathTxtBox.Location = new System.Drawing.Point(229, 155);
             this.OutputPathTxtBox.Name = "OutputPathTxtBox";
             this.OutputPathTxtBox.Size = new System.Drawing.Size(362, 20);
             this.OutputPathTxtBox.TabIndex = 7;
@@ -133,7 +136,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(244, 277);
+            this.label5.Location = new System.Drawing.Point(244, 300);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(333, 13);
             this.label5.TabIndex = 9;
@@ -143,18 +146,29 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(6, 45);
+            this.label6.Location = new System.Drawing.Point(44, 37);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(626, 17);
+            this.label6.Size = new System.Drawing.Size(551, 17);
             this.label6.TabIndex = 10;
-            this.label6.Text = "This application will search through all RDL files in a directory and subdirector" +
-    "ies for data sources.\r\n";
+            this.label6.Text = "This application will search through all RDL && RSD files in a directory for data" +
+    " sources.\r\n";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(333, 138);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(154, 13);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "Place each path on a new line.";
             // 
             // RDLDataSourceFinder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 547);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -164,7 +178,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.CriteriaTextBox);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.RDLPathTxtBox);
+            this.Controls.Add(this.FilesPathTxtBox);
             this.Controls.Add(this.label1);
             this.Name = "RDLDataSourceFinder";
             this.Text = "RDL Data Source Locator";
@@ -177,7 +191,7 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox RDLPathTxtBox;
+        private System.Windows.Forms.TextBox FilesPathTxtBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox CriteriaTextBox;
         private System.Windows.Forms.Label label3;
@@ -189,6 +203,7 @@
         private System.Windows.Forms.TextBox OutputPathTxtBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
     }
 }
 
