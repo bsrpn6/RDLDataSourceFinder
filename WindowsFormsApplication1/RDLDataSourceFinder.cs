@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+//using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.Drawing;
+//using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
+//using System.Threading;
 using System.Windows.Forms;
 
 namespace WindowsFormsApplication1
@@ -57,7 +57,7 @@ namespace WindowsFormsApplication1
 
                 using (StreamWriter writer = new StreamWriter(OutputPath))
                 {
-                    writer.WriteLine("Path,Folder,File Name,File Extension,Database,Table,Column");
+                    writer.WriteLine("Path,Folder,File Name,File Extension,Database,Table,Column,Percent Match");
 
                     foreach (string path in FilePaths)
                     {
@@ -79,7 +79,7 @@ namespace WindowsFormsApplication1
                         foreach (string f in Files)
                         {
                             //read file text into string
-                            string text = System.IO.File.ReadAllText(f);
+                            string text = cleanString(System.IO.File.ReadAllText(f));
 
                             //foreach database/table/column if indexof text exists, then add to output
                             foreach (string[] db in distinctDatabaseTables)
@@ -89,34 +89,47 @@ namespace WindowsFormsApplication1
                                     if (db.Length == 1)
                                     {
                                         ShowProgress(String.Format("{0},{1},{2}", Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), db[0].ToUpper()) + " \r\n");
-                                        writer.WriteLine("{0},{1},{2},{3},{4},{5},{6}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), "", "");
+                                        writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), "", "", "100");
                                     }
                                     //looking for a table
                                     if (db.Length > 1)
                                     {
-                                        if (text.IndexOf(db[0] + "." + db[1], StringComparison.CurrentCultureIgnoreCase) >= 0)
+                                        string databaseTable;
+
+                                        if((text.IndexOf(db[0] + ".dbo." + db[1], StringComparison.CurrentCultureIgnoreCase) >= 0))
+                                        {
+                                            databaseTable = db[0] + ".dbo." + db[1];
+                                        }
+                                        else
+                                        {
+                                            databaseTable = db[0] + "." + db[1];
+                                        }
+
+                                        if (text.IndexOf(databaseTable, StringComparison.CurrentCultureIgnoreCase) >= 0)
                                         {
                                             if (db.Length == 2)
                                             {
                                                 ShowProgress(String.Format("{0},{1},{2},{3}", Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), db[0].ToUpper(), db[1].ToUpper()) + " \r\n");
-                                                writer.WriteLine("{0},{1},{2},{3},{4},{5},{6}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), "");
+                                                writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), "", "100");
                                             }
                                             //looking for a column
                                             if (db.Length > 2)
                                             {
 
                                                 //if looking for explicit definition of database.table.column find a match...
-                                                if (text.IndexOf(db[0] + "." + db[1] + "." + db[2], StringComparison.CurrentCultureIgnoreCase) >= 0)
+                                                if (text.IndexOf(databaseTable + "." + db[2], StringComparison.CurrentCultureIgnoreCase) >= 0) 
                                                 {
                                                     ShowProgress(String.Format("{0},{1},{2},{3},{4}", Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper()) + " \r\n");
-                                                    writer.WriteLine("{0},{1},{2},{3},{4},{5},{6}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper());
+                                                    writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper(), "100");
                                                 }
                                                 //otherwise use regular expressions to find database alias and match against 
                                                 else
                                                 {
                                                     //looking for an alias by finding the database.table combination and looking at the next word
-                                                    Regex reg = new Regex(db[0] + "." + db[1] + "\\s\\w+");
-                                                    MatchCollection matches = reg.Matches(text);
+                                                    Regex reg = new Regex(databaseTable + "\\s\\w+");
+                                                    MatchCollection matches = reg.Matches(text); ;
+
+                                                    bool matchFound = false;
 
                                                     //could be multiple matches/aliases, loop through each
                                                     //once found, break the loop on first found occurrence
@@ -128,9 +141,19 @@ namespace WindowsFormsApplication1
 
                                                         if (text.IndexOf(sub + "." + db[2], StringComparison.CurrentCultureIgnoreCase) >= 0)
                                                         {
+                                                            matchFound = true;
                                                             ShowProgress(String.Format("{0},{1},{2},{3},{4}", Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper()) + " \r\n");
-                                                            writer.WriteLine("{0},{1},{2},{3},{4},{5},{6}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper());
+                                                            writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper(), "99");
                                                             break;
+                                                        }
+                                                    }
+
+                                                    if (!matchFound)
+                                                    {
+                                                        if ((text.IndexOf(databaseTable, StringComparison.CurrentCultureIgnoreCase) >= 0) & (text.IndexOf(db[2], StringComparison.CurrentCultureIgnoreCase) >= 0)) 
+                                                        {
+                                                            ShowProgress(String.Format("{0},{1},{2},{3},{4}", Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper()) + " \r\n");
+                                                            writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper(), "70");
                                                         }
                                                     }
                                                 }
@@ -148,7 +171,7 @@ namespace WindowsFormsApplication1
             }
             catch
             {
-                ShowProgress("CANNOT WRITE TO FILE!!!\r\nBe sure to close any open instances of SearchResults.csv and ensure the path provided is valid.");
+                ShowProgress("CANNOT WRITE TO FILE!!!\r\nBe sure to close any open instances of SearchResults.csv and ensure the path provided is valid.\r\n");
             }
             
             //lockControls(false);
@@ -178,6 +201,11 @@ namespace WindowsFormsApplication1
                 OutputPathTxtBox.Enabled = true;
                 button1.Enabled = true;
             }
+        }
+
+        private string cleanString(string original)
+        {
+            return Regex.Replace(original, @"[\[\]']+", "");
         }
 
         private string setOutputPath()
@@ -216,7 +244,14 @@ namespace WindowsFormsApplication1
             {
                 if (line != "")
                 {
-                    databaseTables.Add(line.Split('.'));
+                    if (line.Substring(line.Length - 1) == ".")
+                    {
+                        databaseTables.Add(line.Substring(0, line.Length - 1).Split('.'));
+                    }
+                    else
+                    {
+                        databaseTables.Add(line.Split('.'));
+                    }
                 }
             }
             //final list that is returned to main task

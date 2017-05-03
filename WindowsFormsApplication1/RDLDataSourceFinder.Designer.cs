@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RDLDataSourceFinder));
             this.label1 = new System.Windows.Forms.Label();
             this.FilesPathTxtBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -42,6 +43,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -163,11 +165,22 @@
             this.label7.TabIndex = 11;
             this.label7.Text = "Place each path on a new line.";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(178, 550);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(283, 13);
+            this.label8.TabIndex = 12;
+            this.label8.Text = "Brought to you by the good folks in Rental Systems (7741).";
+            // 
             // RDLDataSourceFinder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(638, 547);
+            this.ClientSize = new System.Drawing.Size(638, 567);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -180,6 +193,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.FilesPathTxtBox);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RDLDataSourceFinder";
             this.Text = "RDL Data Source Locator";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -204,6 +218,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
     }
 }
 
