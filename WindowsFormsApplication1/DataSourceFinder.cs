@@ -8,11 +8,11 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace WindowsFormsApplication1
+namespace DataSourceFinder
 {
-    public partial class RDLDataSourceFinder : Form
+    public partial class DataSourceFinder : Form
     {
-        public RDLDataSourceFinder()
+        public DataSourceFinder()
         {
             InitializeComponent();
         }
@@ -66,7 +66,7 @@ namespace WindowsFormsApplication1
                         try
                         {
                             Files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-                                .Where(s => s.EndsWith(".rdl", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".rsd", StringComparison.OrdinalIgnoreCase));
+                                    .Where(s => s.EndsWith(".rdl", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".rsd", StringComparison.OrdinalIgnoreCase));
                         }
                         catch
                         {
@@ -99,18 +99,17 @@ namespace WindowsFormsApplication1
                                             else
                                             {
                                                 //looking for an alias by finding the database.table combination and looking at the next word
-                                                Regex reg = new Regex(db[0] + "." + db[1] + "\\s\\w+");
+                                                Regex reg = new Regex(db[0] + "." + db[1] + "\\s+\\w+");
                                                 MatchCollection matches = reg.Matches(text); ;
 
                                                 bool matchFound = false;
 
                                                 //could be multiple matches/aliases, loop through each
-                                                //once found, break the loop on first found occurrence
                                                 foreach (Match match in matches)
                                                 {
                                                     //sub will hold the "database.table alias" data
                                                     //use space as index and return rest of string
-                                                    string sub = match.Value.Substring(match.Value.IndexOf(' ') + 1);
+                                                    string sub = match.Value.Substring(match.Value.LastIndexOf(' ') + 1);
 
                                                     if (text.IndexOf(sub + "." + db[2], StringComparison.CurrentCultureIgnoreCase) >= 0)
                                                     {
@@ -123,14 +122,15 @@ namespace WindowsFormsApplication1
                                                 //last resort just to see if there is a need to check this file
                                                 if (!matchFound)
                                                 {
-                                                    if ((text.IndexOf(db[0] + "." + db[1], StringComparison.CurrentCultureIgnoreCase) >= 0) & (text.IndexOf(db[2], StringComparison.CurrentCultureIgnoreCase) >= 0))
+                                                    if ((text.IndexOf(db[0] + "." + db[1], StringComparison.CurrentCultureIgnoreCase) >= 0) & (text.IndexOf(" " + db[2], StringComparison.CurrentCultureIgnoreCase) >= 0))
                                                     {
                                                         ShowProgress(String.Format("{0}, {1},{2},{3}", Path.GetFileName(f), db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper()) + " \r\n");
-                                                        writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), node.ParentNode.ParentNode.Attributes[0].Value, db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper(), "70");
+                                                        writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), node.ParentNode.ParentNode.Attributes[0].Value, db[0].ToUpper(), db[1].ToUpper(), db[2].ToUpper(), "85");
                                                     }
                                                 }
                                             }
                                             break;
+
                                         case 2:
                                             //looking for an exact match
                                             if (text.IndexOf(db[0] + "." + db[1], StringComparison.CurrentCultureIgnoreCase) >= 0)
@@ -139,6 +139,7 @@ namespace WindowsFormsApplication1
                                                 writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), node.ParentNode.ParentNode.Attributes[0].Value, db[0].ToUpper(), db[1].ToUpper(), "", "100");
                                             }
                                             break;
+
                                         case 1:
                                             //looking for an exact match
                                             if (text.IndexOf(db[0] + ".", StringComparison.CurrentCultureIgnoreCase) >= 0)
@@ -147,6 +148,7 @@ namespace WindowsFormsApplication1
                                                 writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8}", path, Path.GetFileName(Path.GetDirectoryName(f)), Path.GetFileName(f), Path.GetExtension(f), node.ParentNode.ParentNode.Attributes[0].Value, db[0].ToUpper(), "", "", "100");
                                             }
                                             break;
+
                                         default:
                                             //error avaoidance
                                             break;
@@ -196,7 +198,10 @@ namespace WindowsFormsApplication1
 
         private string cleanString(string original)
         {
-            return Regex.Replace(original, @"((?i)\.\[dbo\])|((?i)\.dbo)|[\[\]]", "");
+            string returnValue = original;
+            returnValue = Regex.Replace(returnValue, @"=|&|""|((?i)\.\[dbo\])|((?i)\.dbo)|[\[\]]", "");
+            returnValue = Regex.Replace(returnValue, @"\s+", " ");
+            return returnValue;
         }
 
         private string setOutputPath()
@@ -292,7 +297,7 @@ namespace WindowsFormsApplication1
             return FilePaths;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void DataSourceFinder_Load(object sender, EventArgs e)
         {
             //load preconfigured file search paths from app.config file
             string[] paths = ConfigurationManager.AppSettings.AllKeys

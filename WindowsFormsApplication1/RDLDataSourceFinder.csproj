@@ -85,16 +85,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RDLDataSourceFinder.cs">
+    <Compile Include="DataSourceFinder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RDLDataSourceFinder.Designer.cs">
-      <DependentUpon>RDLDataSourceFinder.cs</DependentUpon>
+    <Compile Include="DataSourceFinder.Designer.cs">
+      <DependentUpon>DataSourceFinder.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="RDLDataSourceFinder.resx">
-      <DependentUpon>RDLDataSourceFinder.cs</DependentUpon>
+    <EmbeddedResource Include="DataSourceFinder.resx">
+      <DependentUpon>DataSourceFinder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -116,7 +116,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

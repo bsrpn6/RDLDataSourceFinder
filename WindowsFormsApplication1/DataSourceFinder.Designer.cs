@@ -1,6 +1,6 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace DataSourceFinder
 {
-    partial class RDLDataSourceFinder
+    partial class DataSourceFinder
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RDLDataSourceFinder));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DataSourceFinder));
             this.label1 = new System.Windows.Forms.Label();
             this.FilesPathTxtBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -175,7 +175,7 @@
             this.label8.TabIndex = 12;
             this.label8.Text = "Brought to you by the good folks in Rental Systems (7741).";
             // 
-            // RDLDataSourceFinder
+            // DataSourceFinder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -194,9 +194,9 @@
             this.Controls.Add(this.FilesPathTxtBox);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "RDLDataSourceFinder";
-            this.Text = "RDL Data Source Locator";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Name = "DataSourceFinder";
+            this.Text = "Data Source Locator";
+            this.Load += new System.EventHandler(this.DataSourceFinder_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
