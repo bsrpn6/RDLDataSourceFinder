@@ -68,9 +68,18 @@ namespace DataSourceFinder
                             Files = Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
                                     .Where(s => s.EndsWith(".rdl", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".rsd", StringComparison.OrdinalIgnoreCase));
                         }
-                        catch
+                        catch (Exception e)
                         {
                             ShowProgress("CANNOT ACCESS PATH: " + path + " Please ensure you have access to the listed path.\r\nIf the path is a listed UNC path, be sure you have opened the\r\nSharePoint admin page prior to running.\r\n");
+
+                            // Write the exception to a file.
+                            ExceptionWriter(e.ToString());
+                            continue;
+                        }
+
+                        if (!Files.Any())
+                        {
+                            ShowProgress("NO FILES FOUND FOR: " + path + " Please ensure you have access to the listed path.\r\nIf the path is a listed UNC path, be sure you have opened the\r\nSharePoint admin page prior to running.\r\n");
                             continue;
                         }
 
@@ -79,9 +88,15 @@ namespace DataSourceFinder
                             //read files into XML document
                             XmlNodeList nodes = retrieveNodes(f);
 
+                            if (nodes == null)
+                            {
+                                ExceptionWriter("File: " + f + " is empty");
+                                continue;
+                            }
+
                             //foreach database/table/column if indexof text exists, then add to output
                             foreach (string[] db in distinctDatabaseTables)
-                            {
+                            {                                
                                 foreach (XmlNode node in nodes)
                                 {
                                     string text = cleanString(node.InnerText);
@@ -162,9 +177,13 @@ namespace DataSourceFinder
                 ShowProgress("Output file saved to " + OutputPath + " \r\n");
                 ShowProgress("COMPLETE" + " \r\n");
             }
-            catch
+            catch(Exception e)
             {
                 ShowProgress("CANNOT WRITE TO FILE!!!\r\nBe sure to close any open instances of SearchResults.csv and ensure the path provided is valid.\r\n");
+
+                // Write the exception to a file.
+                ExceptionWriter(e.ToString());
+                
             }
 
             //lockControls(false);
@@ -203,7 +222,13 @@ namespace DataSourceFinder
             returnValue = Regex.Replace(returnValue, @"\s+", " ");
             return returnValue;
         }
-
+        private void ExceptionWriter(String error)
+        {
+            // Write the exception to a file.
+            System.IO.StreamWriter file = new System.IO.StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\ExceptionCatch.txt", true);
+            file.WriteLine(DateTime.Now.ToString() + "\r\n" + error.ToString() + "\r\n");
+            file.Close();
+        }
         private string setOutputPath()
         {
             //determine if valid output path, if not, use user's desktop
@@ -232,22 +257,39 @@ namespace DataSourceFinder
         {
             //read files into XML document
             XmlDocument doc = new XmlDocument();
-            doc.Load(file);
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
-            nsmgr.AddNamespace("a", doc.DocumentElement.NamespaceURI);
-
-            XmlNodeList nodes = null;
-
-            if (Path.GetExtension(file) == ".rdl")
+            try
             {
-                nodes = doc.SelectNodes("//a:Report/a:DataSets/a:DataSet/a:Query/a:CommandText", nsmgr);
+                doc.Load(file);
             }
-            else if (Path.GetExtension(file) == ".rsd")
+            catch (Exception e)
             {
-                nodes = doc.SelectNodes("//a:SharedDataSet/a:DataSet/a:Query/a:CommandText", nsmgr);
+                // Write the exception to a file.
+                ExceptionWriter(e.ToString());
             }
 
-            return nodes;
+            if (doc.ChildNodes.Count > 0)
+            {
+                XmlNamespaceManager nsmgr = new XmlNamespaceManager(doc.NameTable);
+                nsmgr.AddNamespace("a", doc.DocumentElement.NamespaceURI);
+
+                XmlNodeList nodes = null;
+
+                if (Path.GetExtension(file).Equals(".rdl", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    nodes = doc.SelectNodes("//a:Report/a:DataSets/a:DataSet/a:Query/a:CommandText", nsmgr);
+                }
+                else if (Path.GetExtension(file).Equals(".rsd", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    nodes = doc.SelectNodes("//a:SharedDataSet/a:DataSet/a:Query/a:CommandText", nsmgr);
+                }
+
+                return nodes;
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         private List<string[]> setSearchCriteria()
